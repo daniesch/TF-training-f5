@@ -1,0 +1,2 @@
+.terraform/
+terraform-gke-keyfile.json
