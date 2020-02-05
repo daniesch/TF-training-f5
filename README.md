@@ -157,5 +157,213 @@ We should now have a terraform.tf file and the service account key-file in our w
 ├── terraform.tf
 ├── variables.tf
 └── variables.auto.tfvars
+```
+
+We will create each of those files and learn their purpose.
+
+The .terraform/ directory is created and managed by Terraform, this is where it stores the external modules and plugins we will reference. To create the GKE cluster with Terraform, we will use the Google Terraform provider and a GKE community module. A module is a package of Terraform code that combines different resources to create something more complex. In our case, we will use a single module that will create for us many various resources such as a Google Container cluster, node pools, and a cluster service account.
+
+To configure terraform to communicate with the Google Cloud API and to create GCP resources, create a providers.tf file:
 
 ```
+provider "google" {
+  version     = "2.7.0"
+  credentials = "${file(var.credentials)}"
+  project     = var.project_id
+  region      = var.region
+}
+
+provider "google-beta" {
+  version     = "2.7.0"
+  credentials = "${file(var.credentials)}"
+  project     = var.project_id
+  region      = var.region
+}
+```
+
+Then create the following main.tf file where we reference the module mentioned earlier and provide it with the appropriate variables:
+
+```
+module "gke" {
+  source                     = "terraform-google-modules/kubernetes-engine/google"
+  version                    = "4.1.0"
+  project_id                 = var.project_id
+  region                     = var.region
+  zones                      = var.zones
+  name                       = var.name
+  network                    = "default"
+  subnetwork                 = "default"
+  ip_range_pods              = ""
+  ip_range_services          = ""
+  http_load_balancing        = false
+  horizontal_pod_autoscaling = true
+  kubernetes_dashboard       = true
+  network_policy             = true
+
+  node_pools = [
+    {
+      name               = "default-node-pool"
+      machine_type       = var.machine_type
+      min_count          = var.min_count
+      max_count          = var.max_count
+      disk_size_gb       = var.disk_size_gb
+      disk_type          = "pd-standard"
+      image_type         = "COS"
+      auto_repair        = true
+      auto_upgrade       = true
+      service_account    = var.service_account
+      preemptible        = false
+      initial_node_count = var.initial_node_count
+    },
+  ]
+
+  node_pools_oauth_scopes = {
+    all = []
+
+    default-node-pool = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
+  }
+
+  node_pools_labels = {
+    all = {}
+
+    default-node-pool = {
+      default-node-pool = true
+    }
+  }
+
+  node_pools_metadata = {
+    all = {}
+
+    default-node-pool = {
+      node-pool-metadata-custom-value = "my-node-pool"
+    }
+  }
+
+  node_pools_taints = {
+    all = []
+
+    default-node-pool = [
+      {
+        key    = "default-node-pool"
+        value  = true
+        effect = "PREFER_NO_SCHEDULE"
+      },
+    ]
+  }
+
+  node_pools_tags = {
+    all = []
+
+    default-node-pool = [
+      "default-node-pool",
+    ]
+  }
+}
+```
+
+Now create a variables.tf file to describe the variables referenced in the previous file and their type:
+
+```
+variable "credentials" {
+  type        = string
+  description = "Location of the credentials keyfile."
+}
+
+variable "project_id" {
+  type        = string
+  description = "The project ID to host the cluster in."
+}
+
+variable "region" {
+  type        = string
+  description = "The region to host the cluster in."
+}
+
+variable "zones" {
+  type        = list(string)
+  description = "The zones to host the cluster in."
+}
+
+variable "name" {
+  type        = string
+  description = "The name of the cluster."
+}
+
+variable "machine_type" {
+  type        = string
+  description = "Type of the node compute engines."
+}
+
+variable "min_count" {
+  type        = number
+  description = "Minimum number of nodes in the NodePool. Must be >=0 and <= max_node_count."
+}
+
+variable "max_count" {
+  type        = number
+  description = "Maximum number of nodes in the NodePool. Must be >= min_node_count."
+}
+
+variable "disk_size_gb" {
+  type        = number
+  description = "Size of the node's disk."
+}
+
+variable "service_account" {
+  type        = string
+  description = "The service account to run nodes as if not overridden in `node_pools`. The create_service_account variable default value (true) will cause a cluster-specific service account to be created."
+}
+
+variable "initial_node_count" {
+  type        = number
+  description = "The number of nodes to create in this cluster's default node pool."
+}
+```
+
+Finally, create the following variables.auto.tfvars file to specify values for the variables defined above:
+
+```
+credentials        = "./terraform-gke-keyfile.json"
+project_id         = "<project_name>"
+region             = "<region>"
+zones              = ["<region>-a", "<region>-b", "<region>-c"]
+name               = "gke-cluster"
+machine_type       = "<machine_type>"
+min_count          = 1
+max_count          = 3
+disk_size_gb       = 10
+service_account    = "<service_account_name>@<project_name>.iam.gserviceaccount.com"
+initial_node_count = 3
+
+```
+
+For region, you can choose the same as the location of your bucket, for example europe-west4.
+For machine_type,  you can choose g1-small, it corresponds to a Compute Engine with 1 vCPU and 1.7 GB memory and is sufficient for a small Kubernetes cluster.
+
+Now that we have created all the necessary files, let’s run terraform init again to install the required plugins. If you are curious, you can compare the content of the .terraform/ directory before and after running this command.
+
+To get a complete list of the different resources Terraform will create to achieve the state described in the configuration files you just wrote, run :
+
+```
+terraform plan
+```
+
+And to create the GKE cluster, apply the plan:
+
+```
+terraform apply
+```
+When prompted for confirmation, type in “yes” and wait a few minutes for Terraform to build the cluster.
+
+When Terraform is done, we can check the status of the cluster and configure the kubectl command line tool to connect to it with:
+
+```
+gcloud container clusters list
+gcloud container clusters get-credentials gke-cluster
+```
+
+In this article, we have learned how to use Terraform to build a Kubernetes cluster on Google Cloud Platform.
+
+Thanks
