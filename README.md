@@ -80,7 +80,7 @@ gcloud iam service-accounts keys create terraform-gke-keyfile.json --iam-account
 ```
 
 
-##Terraform state in Google Cloud Storage
+## Terraform state in Google Cloud Storage
 
 To work on your infrastructure with a team, we can use source control to share your infrastructure code. By default, Terraform stores the state of your infrastructure in a local state file. We could commit it with your infrastructure code, but the best practice for sharing a Terraform state when working with teams is to store it in remote storage. In our case, we will configure Terraform to store the state in a Google Cloud Storage Bucket.
 
@@ -90,7 +90,7 @@ First, let’s create a bucket, we could do it graphically on the Google Cloud C
 gsutil mb -p f5-gcs-4261-sales-emea-dach -c regional -l <location> gs://<bucket_name>/
 ```
 
-###Availabal GCP Regions
+## Availabal GCP Regions
 northamerica-northeast1 (Montréal)
 us-central (Iowa)
 us-west2 (Los Angeles)
@@ -139,7 +139,7 @@ terraform {
 We can now run terraform init and the output will display that the Google Cloud Storage backend is properly configured.
 
 
-###Create the GKE cluster
+### Create the GKE cluster
 
 We should now have a terraform.tf file and the service account key-file in our working directory. Here is our target directory structure:
 
