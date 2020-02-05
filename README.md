@@ -1,7 +1,7 @@
-** TF-training-f5 **
+# TF-training-f5 
 
 
-** Terraform for Infrastructure as Code **
+## Terraform for Infrastructure as Code
 
 Terraform is an infrastructure as code (IaC) tool by HashiCorp that allows provisioning of a wide variety of infrastructure resources through a collection of plugins. IaC means we write configuration files that describe the infrastructure we want, and when we run Terraform, it compares it with the current state of the deployed resources and provisions or edits the necessary resources to match the wanted state.
 
@@ -25,7 +25,7 @@ brew install terraform
 ```
 
 
-** Set up your Google Cloud Platform working environment **
+## Set up your Google Cloud Platform working environment
 
 Before we can start using GCP, we need to create a project and activate billing on it. Don’t worry, this will not cost you anything, Google offers $300 in free credit when you start using GCP and will never charge you unless you manually upgrade to a paid account.
 Once we have our project, we can install and configure the Google Cloud SDK and the Kubernetes command line tool. The SDK provides the tools used to interact with the Google Cloud Platform REST API, they allow us to create and manage GCP resources from a command-line interface. Run the following commands to install and initialize it:
