@@ -91,6 +91,7 @@ gsutil mb -p f5-gcs-4261-sales-emea-dach -c regional -l <location> gs://<bucket_
 ```
 
 ## Availabal GCP Regions
+```
 northamerica-northeast1 (Montréal)
 us-central (Iowa)
 us-west2 (Los Angeles)
@@ -106,7 +107,7 @@ asia-northeast2 (Osaka)
 asia-east2 (Hong Kong)
 asia-south1 (Mumbai)
 australia-southeast1 (Sydney)
-
+```
 
 For location, you can choose europe-west4 or anything else you like.
 For bucket_name, choose a meaningful globally unique name. If the name you chose is unavailable, try again with a different name.
