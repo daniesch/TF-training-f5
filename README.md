@@ -348,6 +348,8 @@ Now that we have created all the necessary files, let’s run terraform init aga
 To get a complete list of the different resources Terraform will create to achieve the state described in the configuration files you just wrote, run :
 
 ```
+terraform init
+
 terraform plan
 ```
 
