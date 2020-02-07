@@ -347,11 +347,13 @@ For machine_type,  you can choose g1-small, it corresponds to a Compute Engine w
 
 Now that we have created all the necessary files, let’s run terraform init again to install the required plugins. If you are curious, you can compare the content of the .terraform/ directory before and after running this command.
 
+```
+terraform init
+```
+
 To get a complete list of the different resources Terraform will create to achieve the state described in the configuration files you just wrote, run :
 
 ```
-terraform init
-
 terraform plan
 ```
 
