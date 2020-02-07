@@ -200,6 +200,7 @@ module "gke" {
   http_load_balancing        = false
   horizontal_pod_autoscaling = true
   kubernetes_dashboard       = true
+  kubernetes_version         = "1.14"
   network_policy             = true
 
   node_pools = [
