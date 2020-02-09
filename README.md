@@ -67,10 +67,18 @@ Here service_account_name is the name of our service account, it cannot contain 
 Now we can grant the necessary roles for our service account to create a GKE cluster and the associated resources:
 
 ```
+<<<<<<< HEAD
 gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/container.admin
 gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/compute.admin
 gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/iam.serviceAccountUser
 gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/resourcemanager.projectIamAdmin
+=======
+gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/container.admin
+gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/compute.admin
+gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/iam.serviceAccountUser
+gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/iam.serviceAccountAdmin
+gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/resourcemanager.projectIamAdmin
+>>>>>>> 3cd94453f2a763a8cb113dbb4b636f5266e88945
 ```
 
 Finally, we can create and download a key file that Terraform will use to authenticate as the service account against the Google Cloud Platform API:
@@ -82,7 +90,7 @@ gcloud iam service-accounts keys create terraform-gke-keyfile.json --iam-account
 
 ## Terraform state in Google Cloud Storage
 
-To work on your infrastructure with a team, we can use source control to share your infrastructure code. By default, Terraform stores the state of your infrastructure in a local state file. We could commit it with your infrastructure code, but the best practice for sharing a Terraform state when working with teams is to store it in remote storage. In our case, we will configure Terraform to store the state in a Google Cloud Storage Bucket.
+To work on our infrastructure with a team, we can use source control to share our infrastructure code. By default, Terraform stores the state of our infrastructure in a local state file. We could commit it with our infrastructure code, but the best practice for sharing a Terraform state when working with teams is to store it in remote storage. In our case, we will configure Terraform to store the state in a Google Cloud Storage Bucket.
 
 First, let’s create a bucket, we could do it graphically on the Google Cloud Console, or we can use the Google Cloud SDK we just installed:
 
@@ -199,6 +207,7 @@ module "gke" {
   http_load_balancing        = false
   horizontal_pod_autoscaling = true
   kubernetes_dashboard       = true
+  kubernetes_version         = "1.14"
   network_policy             = true
 
   node_pools = [
@@ -344,6 +353,10 @@ For region, you can choose the same as the location of your bucket, for example 
 For machine_type,  you can choose g1-small, it corresponds to a Compute Engine with 1 vCPU and 1.7 GB memory and is sufficient for a small Kubernetes cluster.
 
 Now that we have created all the necessary files, let’s run terraform init again to install the required plugins. If you are curious, you can compare the content of the .terraform/ directory before and after running this command.
+
+```
+terraform init
+```
 
 To get a complete list of the different resources Terraform will create to achieve the state described in the configuration files you just wrote, run :
 
