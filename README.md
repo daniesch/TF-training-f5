@@ -67,18 +67,10 @@ Here service_account_name is the name of our service account, it cannot contain 
 Now we can grant the necessary roles for our service account to create a GKE cluster and the associated resources:
 
 ```
-<<<<<<< HEAD
 gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/container.admin
 gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/compute.admin
 gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/iam.serviceAccountUser
 gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/resourcemanager.projectIamAdmin
-=======
-gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/container.admin
-gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/compute.admin
-gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/iam.serviceAccountUser
-gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/iam.serviceAccountAdmin
-gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/resourcemanager.projectIamAdmin
->>>>>>> 3cd94453f2a763a8cb113dbb4b636f5266e88945
 ```
 
 Finally, we can create and download a key file that Terraform will use to authenticate as the service account against the Google Cloud Platform API:
