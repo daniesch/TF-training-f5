@@ -67,16 +67,16 @@ Here service_account_name is the name of our service account, it cannot contain 
 Now we can grant the necessary roles for our service account to create a GKE cluster and the associated resources:
 
 ```
-gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/container.admin
-gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/compute.admin
-gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/iam.serviceAccountUser
-gcloud projects add-iam-policy-binding f5-gcs-4261-sales-emea-dach --member serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com --role roles/resourcemanager.projectIamAdmin
+gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/container.admin
+gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/compute.admin
+gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/iam.serviceAccountUser
+gcloud projects add-iam-policy-binding <project_name> --member serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com --role roles/resourcemanager.projectIamAdmin
 ```
 
 Finally, we can create and download a key file that Terraform will use to authenticate as the service account against the Google Cloud Platform API:
 
 ```
-gcloud iam service-accounts keys create terraform-gke-keyfile.json --iam-account=<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com
+gcloud iam service-accounts keys create terraform-gke-keyfile.json --iam-account=<service_account_name>@<project_name>.iam.gserviceaccount.com
 ```
 
 
@@ -87,7 +87,7 @@ To work on your infrastructure with a team, we can use source control to share y
 First, let’s create a bucket, we could do it graphically on the Google Cloud Console, or we can use the Google Cloud SDK we just installed:
 
 ```
-gsutil mb -p f5-gcs-4261-sales-emea-dach -c regional -l <location> gs://<bucket_name>/
+gsutil mb -p <project_name> -c regional -l <location> gs://<bucket_name>/
 ```
 
 ## Availabal GCP Regions
@@ -122,7 +122,7 @@ gsutil versioning set on gs://<bucket_name>/
 Finally, we can grant read/write permissions on this bucket to our service account:
 
 ```
-gsutil iam ch serviceAccount:<service_account_name>@f5-gcs-4261-sales-emea-dach.iam.gserviceaccount.com:legacyBucketWriter gs://<bucket_name>/
+gsutil iam ch serviceAccount:<service_account_name>@<project_name>.iam.gserviceaccount.com:legacyBucketWriter gs://<bucket_name>/
 ```
 
 We can now configure Terraform to use this bucket to store the state. Create the following terraform.ft file in the same directory where you downloaded the service account key file. Make sure to replace the bucket name with yours.
